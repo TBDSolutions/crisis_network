@@ -1,6 +1,6 @@
 ## readCrisis.R
 library(tidyverse); library(readxl); library(ggmap); library(leaflet)
-library(htmltools); library(magrittr)
+library(htmltools); library(magrittr); library(feather)
 
 
 #### Get data from sheets ####
@@ -86,3 +86,7 @@ crisis_map <-
 
 library(htmlwidgets)
 saveWidget(crisis_map, file = "crisis_map.html")
+
+write_feather(crisis_address, "data/crisis_address.feather")
+write_feather(crisis_coords, "data/crisis_coords.feather")
+write_feather(crisis_network, "data/crisis_network.feather")

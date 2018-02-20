@@ -37,3 +37,4 @@ crisis_radius <-
 
 library(htmlwidgets)
 saveWidget(crisis_radius, file = "crisis_radius.html")
+write_feather(crisis_radius, "data/crisis_radius.feather")
