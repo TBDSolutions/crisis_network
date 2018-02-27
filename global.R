@@ -28,4 +28,9 @@ crisis_address <- read_feather("data/crisis_address.feather")
 crisis_coords <- read_feather("data/crisis_coords.feather")
 crisis_network <- read_feather("data/crisis_network.feather")
 
+crisis_address <- crisis_address %>%
+  filter(is.na(lon) == F) %>%
+  filter(is.na(Name) == F) %>%
+  mutate(Name = trimws(Name))
+
 factpal <- colorFactor("viridis", unique(crisis_address$type))

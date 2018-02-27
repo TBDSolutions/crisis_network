@@ -23,10 +23,25 @@ body <- dashboardBody(
       width = 3,
       box(
         width = NULL,
-        sliderInput(
-          "radius_len",
-          "Lengh of the Radius:",
-          min = 50000, max = 150000, value = 96560.6
+        checkboxInput("radius_check", "Display Radius:", value = T),
+        conditionalPanel(
+          condition = "input.radius_check == true",
+          sliderInput(
+            "radius_len",
+            "Lengh of the Radius: (miles)",
+            min = 10, max = 100, value = 50
+          )
+        ),
+        selectInput(
+          "program_type", "Choose type(s) of program",
+          c(
+            "Crisis Facility" = "Crisis Facility",
+            "23hr Crisis Stabilization" = "23-Hour Crisis Stabilization",
+            "Peer Respite" = "Peer Respite",
+            "Youth CRU" = "Youth CRU"
+          ),
+          selected = c("Crisis Facility","23-Hour Crisis Stabilization","Peer Respite","Youth CRU"),
+          multiple = TRUE, selectize = TRUE, width = NULL, size = NULL
         )
       )
     )
