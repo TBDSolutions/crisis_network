@@ -52,40 +52,14 @@ crisis_address <-
     Phone,
     Operated = `Operated by`,
     type) %>%
-  filter(is.na(Location) == F) 
+  filter(is.na(Location) == F)
 
 crisis_coords <- geocode(crisis_address$Location)
 
-crisis_address %<>% bind_cols(crisis_coords)
+crisis_address %<>%
+  bind_cols(crisis_coords)
 
 factpal <- colorFactor("viridis", unique(crisis_address$type))
-
-crisis_map <-
-  crisis_address %>%
-  filter(is.na(lon) == F) %>%
-  leaflet() %>% 
-  addProviderTiles(providers$Stamen.Toner) %>%
-  setView(
-    lng = -94.61057, 
-    lat = 39.05998, 
-    zoom = 4
-  ) %>%
-  addCircleMarkers(
-    lng = ~lon, 
-    lat = ~lat,
-    color = ~factpal(type),
-    popup = ~paste0(
-        "<b>Name:</b> ",htmlEscape(Name),"<br/>",
-        "<b>Address:</b> ",htmlEscape(Location),"<br/>",
-        "<b>Operated by:</b> ",htmlEscape(Operated),"<br/>",
-        "<b>Program Type:</b> ",htmlEscape(type)
-    ),
-    stroke = FALSE, 
-    fillOpacity = 0.25
-  )
-
-library(htmlwidgets)
-saveWidget(crisis_map, file = "crisis_map.html")
 
 write_feather(crisis_address, "data/crisis_address.feather")
 write_feather(crisis_coords, "data/crisis_coords.feather")
