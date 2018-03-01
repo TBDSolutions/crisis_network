@@ -49,6 +49,7 @@ body <- dashboardBody(
 )
 
 dashboardPage(
+  skin = "black",
   header,
   dashboardSidebar(disable = TRUE),
   body
