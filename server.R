@@ -15,6 +15,10 @@ shinyServer(
           zoom = 4
         )
       
+      # make a pallete
+      # crisis_address$type_cat <- factor(sample.int(4L, nrow(crisis_address), TRUE))
+      # factpal <- colorFactor(topo.colors(4), crisis_address$type_cat)
+      
       if(input$radius_check == T){
         crisis_leaf %>%
           addCircles(
@@ -39,6 +43,11 @@ shinyServer(
             stroke = FALSE,
             radius = 4,
             fillOpacity = 0.6
+          ) %>%
+          addLegend(
+            title = "Program Types",
+            pal = factpal,
+            values = ~type
           )
       } else{
         crisis_leaf %>%
@@ -55,6 +64,11 @@ shinyServer(
             stroke = FALSE,
             radius = 4,
             fillOpacity = 0.6
+          ) %>%
+          addLegend(
+            title = "Program Types",
+            pal = factpal,
+            values = ~type
           )
       }
     })
