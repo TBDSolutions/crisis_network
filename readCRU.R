@@ -41,9 +41,9 @@ while( na_location > 0){
   for(i in 1:na_location){
     x <- CRU_address$Location[missing_loc[i]] %>%
       geocode()
-    CRU_address$lon[missing_loc[i]] = x[1]
-    CRU_address$lat[missing_loc[i]] = x[2]
-    print(paste("hi from ", i))
+    CRU_address$lon[missing_loc[i]] = x$lon
+    CRU_address$lat[missing_loc[i]] = x$lat
+    #print(paste("hi from ", i))
   }
   na_location <- CRU_address$lon %>% is.na() %>% sum()
   if(Max_Rep == 0) break
@@ -52,6 +52,6 @@ while( na_location > 0){
 
 #factpal <- colorFactor("viridis", unique(CRU_address))
 
-write_feather(crisis_address, "data/CRU_address.feather")
-write_feather(crisis_coords, "data/CRU_coords.feather")
-write_feather(crisis_network, "data/CRU_network.feather")
+write_feather(CRU_address, "data/CRU_address.feather")
+write_feather(CRU_coords, "data/CRU_coords.feather")
+write_feather(CRU_network, "data/CRU_network.feather")
