@@ -1,0 +1,381 @@
+---
+title: "Crisis Use Comparison"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(
+  echo = F, warning = F, message = F, 
+  fig.width = 6, fig.asp = 0.618,
+  out.width = "70%",fig.align = "center"
+)
+```
+
+```{r get_data}
+
+library(tidyverse)
+
+palette <- c("#399283", "#a1def0", "#074d65")
+
+open404 <- read.csv("https://raw.githubusercontent.com/j-hagedorn/open404/master/data/clean/Master.csv")
+
+totals <- 
+  read.csv("https://raw.githubusercontent.com/j-hagedorn/open404/master/data/TotalServedAnnual.csv") %>%
+  group_by(FY) %>%
+  summarize(TotalServed = sum(TotalServed))
+
+acute <-
+  open404 %>%
+  filter(FY >= 2011) %>%
+  filter(Population %in% c("MIA","MIC")) %>%
+  filter(
+    Code_Mod %in% c("H0018","0100PT68","0100PT73","100PT68","100PT73")
+  ) %>%
+  filter(Description != "Substance Abuse: Residential") %>%
+  left_join(totals, by = "FY") %>%
+  group_by(FY,Population,Description) %>%
+  summarize(
+    SumOfCases  = sum(SumOfCases, na.rm = T),
+    SumOfUnits  = sum(SumOfUnits, na.rm = T),
+    SumOfCost   = round(sum(SumOfCost, na.rm = T), digits = 2),
+    TotalServed = max(TotalServed, na.rm = T)
+  ) %>%
+  mutate(
+    CostPerCase = round(SumOfCost/SumOfCases, digits = 2),
+    CostPerUnit = round(SumOfCost/SumOfUnits, digits = 2),
+    UnitPerCase = round(SumOfUnits/SumOfCases, digits = 1),
+    Cost1kSvd = round(SumOfCost/TotalServed*1000, digits = 2),
+    Perc_Svd = round(SumOfCases/TotalServed*100, digits = 1),
+    Description = recode(
+      Description,
+      `Crisis Residential Services` = "Crisis Residential",
+      `Local Psychiatric Hospital - Acute Community PT73 Bundled per diem` = "Inpatient (Acute)",
+      `Local Psychiatric Hospital - Acute Community PT73` = "Inpatient (Acute)",
+`Local Psychiatric Hospital/IMD PT68 Bundled per diem` = "Inpatient (IMD)",
+      `Local Psychiatric Hospital/IMD PT68` = "Inpatient (IMD)"
+    )
+  )
+
+acute_year <-
+acute %>%
+  group_by(FY,Description) %>%
+  summarize(
+    SumOfCases  = sum(SumOfCases, na.rm = T),
+    SumOfUnits  = sum(SumOfUnits, na.rm = T),
+    SumOfCost   = round(sum(SumOfCost, na.rm = T), digits = 2),
+    TotalServed = max(TotalServed, na.rm = T)
+  ) %>%
+  mutate(
+    CostPerCase = round(SumOfCost/SumOfCases, digits = 2),
+    CostPerUnit = round(SumOfCost/SumOfUnits, digits = 2),
+    UnitPerCase = round(SumOfUnits/SumOfCases, digits = 1),
+    Cost1kSvd = round(SumOfCost/TotalServed*1000, digits = 2),
+    Perc_Svd = round(SumOfCases/TotalServed*100, digits = 1)
+  ) %>%
+  droplevels() %>% ungroup()
+
+acute_year_mia <-
+acute %>%
+  filter(Population == "MIA") %>%
+  group_by(FY,Description) %>%
+  summarize(
+    SumOfCases  = sum(SumOfCases, na.rm = T),
+    SumOfUnits  = sum(SumOfUnits, na.rm = T),
+    SumOfCost   = round(sum(SumOfCost, na.rm = T), digits = 2),
+    TotalServed = max(TotalServed, na.rm = T)
+  ) %>%
+  mutate(
+    CostPerCase = round(SumOfCost/SumOfCases, digits = 2),
+    CostPerUnit = round(SumOfCost/SumOfUnits, digits = 2),
+    UnitPerCase = round(SumOfUnits/SumOfCases, digits = 1),
+    Cost1kSvd = round(SumOfCost/TotalServed*1000, digits = 2),
+    Perc_Svd = round(SumOfCases/TotalServed*100, digits = 1)
+  ) %>%
+  droplevels() %>% ungroup()
+
+acute_year_mic <-
+acute %>%
+  filter(Population == "MIC") %>%
+  group_by(FY,Description) %>%
+  summarize(
+    SumOfCases  = sum(SumOfCases, na.rm = T),
+    SumOfUnits  = sum(SumOfUnits, na.rm = T),
+    SumOfCost   = round(sum(SumOfCost, na.rm = T), digits = 2),
+    TotalServed = max(TotalServed, na.rm = T)
+  ) %>%
+  mutate(
+    CostPerCase = round(SumOfCost/SumOfCases, digits = 2),
+    CostPerUnit = round(SumOfCost/SumOfUnits, digits = 2),
+    UnitPerCase = round(SumOfUnits/SumOfCases, digits = 1),
+    Cost1kSvd = round(SumOfCost/TotalServed*1000, digits = 2),
+    Perc_Svd = round(SumOfCases/TotalServed*100, digits = 1)
+  ) %>%
+  droplevels() %>% ungroup()
+
+```
+
+### Overall: Includes Adults and Children with Mental Illness
+
+#### Percent of Total Population Receiving Acute Services
+
+The chart below shows the proportion of all individuals receiving services who received the acute service identified (i.e. Crisis Residential or Inpatient).  Note that individuals may be included in more than one of the services if they received both during a given fiscal year (FY).  Also, if an individual received services from more than one CMHSP during a given FY, they may be duplicated for each of these as well.  The denominator (i.e. total number of people served) includes all individuals served in the behavioral health system, and thus also includes individuals with developmental disablity designation, though these individuals are filtered out of the numerator.
+
+```{r pct_svd}
+
+library(plotly)
+
+acute_year %>%
+  plot_ly(
+    x = ~FY,
+    y = ~Perc_Svd,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(
+      title = "FY", 
+      showgrid = F
+    ), 
+    yaxis = list(
+      title = "Percent Served", 
+      ticksuffix = "%",
+      range = c(0,10)
+    )
+  )
+
+```
+
+#### Average Cost per Day
+
+Each of the acute services compared here is billed on a per-day basis.  The chart below shows the average cost of a day of services during each of the years reviewed.
+
+```{r cost_day}
+acute_year %>%
+  plot_ly(
+    x = ~FY,
+    y = ~CostPerUnit,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(
+      title = "FY", 
+      showgrid = F
+    ), 
+    yaxis = list(
+      title = "Average per diem cost",
+      tickprefix = "$",
+      range = c(0,1000)
+    )
+  )
+```
+
+#### Average Number of Days per Person
+
+The chart below shows the average number of days receiving each service for individuals who received an acute service.  Note that this metric looks at the total number of days that individuals received services over the course of an entire year, thus combining multiple stays in some instances.
+
+```{r days_per_person}
+acute_year %>%
+  plot_ly(
+    x = ~FY,
+    y = ~UnitPerCase,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(title = "FY", showgrid = F), 
+    yaxis = list(
+      title = "Average # days per person", 
+      range = c(0,12)
+    )
+  )
+```
+
+#### Total Cost of Acute Services
+
+The chart below shows the total cost of each acute service at the state level, per year.
+
+```{r total_cost}
+acute_year %>%
+  plot_ly(
+    x = ~FY,
+    y = ~SumOfCost,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(title = "FY", showgrid = F), 
+    yaxis = list(
+      title = "Total Costs", 
+      tickprefix = "$",
+      range = c(0,100000000)
+    )
+  )
+```
+
+---
+
+### Adults with Mental Illness
+
+#### Average Cost per Day
+
+Each of the acute services compared here is billed on a per-day basis.  The chart below shows the average cost of a day of services during each of the years reviewed.
+
+```{r cost_day_mia}
+acute_year_mia %>%
+  plot_ly(
+    x = ~FY,
+    y = ~CostPerUnit,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(
+      title = "FY", 
+      showgrid = F
+    ), 
+    yaxis = list(
+      title = "Average per diem cost",
+      tickprefix = "$",
+      range = c(0,1000)
+    )
+  )
+```
+
+#### Average Number of Days per Person
+
+The chart below shows the average number of days receiving each service for individuals who received an acute service.  Note that this metric looks at the total number of days that individuals received services over the course of an entire year, thus combining multiple stays in some instances.
+
+```{r days_per_person_mia}
+acute_year_mia %>%
+  plot_ly(
+    x = ~FY,
+    y = ~UnitPerCase,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(title = "FY", showgrid = F), 
+    yaxis = list(
+      title = "Average # days per person", 
+      range = c(0,12)
+    )
+  )
+```
+
+#### Total Cost of Acute Services
+
+The chart below shows the total cost of each acute service at the state level, per year.
+
+```{r total_cost_mia}
+acute_year_mia %>%
+  plot_ly(
+    x = ~FY,
+    y = ~SumOfCost,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(title = "FY", showgrid = F), 
+    yaxis = list(
+      title = "Total Costs", 
+      tickprefix = "$",
+      range = c(0,100000000)
+    )
+  )
+```
+
+---
+
+### Children with Mental Illness
+
+#### Average Cost per Day
+
+Each of the acute services compared here is billed on a per-day basis.  The chart below shows the average cost of a day of services during each of the years reviewed.
+
+```{r cost_day_mic}
+acute_year_mic %>%
+  plot_ly(
+    x = ~FY,
+    y = ~CostPerUnit,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(
+      title = "FY", 
+      showgrid = F
+    ), 
+    yaxis = list(
+      title = "Average per diem cost",
+      tickprefix = "$",
+      range = c(0,1000)
+    )
+  )
+```
+
+#### Average Number of Days per Person
+
+The chart below shows the average number of days receiving each service for individuals who received an acute service.  Note that this metric looks at the total number of days that individuals received services over the course of an entire year, thus combining multiple stays in some instances.
+
+```{r days_per_person_mic}
+acute_year_mic %>%
+  plot_ly(
+    x = ~FY,
+    y = ~UnitPerCase,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(title = "FY", showgrid = F), 
+    yaxis = list(
+      title = "Average # days per person", 
+      range = c(0,12)
+    )
+  )
+```
+
+#### Total Cost of Acute Services
+
+The chart below shows the total cost of each acute service at the state level, per year.
+
+```{r total_cost_mic}
+acute_year_mic %>%
+  plot_ly(
+    x = ~FY,
+    y = ~SumOfCost,
+    color = ~Description,
+    colors = palette
+  ) %>%
+  add_lines(showlegend = F) %>%
+  add_markers() %>%
+  layout(
+    xaxis = list(title = "FY", showgrid = F), 
+    yaxis = list(
+      title = "Total Costs", 
+      tickprefix = "$",
+      range = c(0,100000000)
+    )
+  )
+```
+
