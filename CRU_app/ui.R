@@ -35,6 +35,11 @@ body <- dashboardBody(
             "radius_len_rural",
             "Lengh of the Radius for Rural: (miles)",
             min = 10, max = 200, value = 120
+          ),
+          sliderInput(
+            "radius_opacity",
+            "Opacity of the Radius",
+            min = 0.1, max = 0.5, value = 0.3
           )
         ),
         selectInput(

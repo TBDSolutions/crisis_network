@@ -24,6 +24,10 @@ library(readxl)
 library(ggmap)
 library(htmltools)
 
+# Please specify your own directory where CRU_address.feather file exists
+# If there is no such feather file, run readCRU.R automatically...
+if(!file.exists("C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_address.feather")) source("../readCRU.R")
+
 CRU_address <- read_feather("../data/CRU_address.feather")
 
 CRU_address <- CRU_address %>%
@@ -31,4 +35,4 @@ CRU_address <- CRU_address %>%
   filter(!is.na(Name)) %>%
   mutate(Name = trimws(Name))
 
-factpal <- colorFactor("viridis", unique(CRU_address$Adult_Youth))
+factpal <- colorFactor("Accent", unique(CRU_address$Urban_Rural))

@@ -1,19 +1,20 @@
 ## server.R ##
 
-fact_rad <- function(x){
-  if(x == "Urban") 1
-  if(x == "Rural") 0
-}
-
 shinyServer(
   function(input, output) { 
+    CRU_reactive <- reactive({
+      CRU_address %>% mutate(
+        Radius = ifelse(Urban_Rural == "Urban", input$radius_len_urban * 1609.34, input$radius_len_rural * 1609.34)
+      )
+    })
     
     output$CRU_radius <- renderLeaflet({
-      CRU_leaf <- CRU_address %>%
+      CRU_leaf <- CRU_reactive() %>%
         filter(!is.na(lon)) %>%
         filter(Adult_Youth %in% input$age_group) %>%
         leaflet() %>%
-        addProviderTiles(providers$Stamen.Toner) %>%
+        addTiles() %>%
+        #addProviderTiles(providers$Stamen.Toner) %>%
         setView(
           lng = -85,
           lat = 44,
@@ -26,16 +27,16 @@ shinyServer(
         addCircles(
           lng = ~lon,
           lat = ~lat,
-          color = ~factpal(Adult_Youth),
+          color = ~factpal(Urban_Rural),
           stroke = FALSE,
           # Add radius in meters (= 60 miles)
-          radius = ~fact_rad(Urban_Rural) * 20 * 1609.34,
-          fillOpacity = 0.2
+          radius = ~Radius,
+          fillOpacity = input$radius_opacity
         ) %>%
         addCircleMarkers(
           lng = ~lon,
           lat = ~lat,
-          color = ~factpal(Adult_Youth),
+          color = ~factpal(Urban_Rural),
           popup = ~paste0(
             "<b>Name:</b> ",htmlEscape(Name),"<br/>",
             "<b>Address:</b> ",htmlEscape(Location),"<br/>",
@@ -45,7 +46,7 @@ shinyServer(
           ),
           stroke = FALSE,
           radius = 4,
-          fillOpacity = 0.6
+          fillOpacity = 0.8
         )
 
       } else{
@@ -53,7 +54,7 @@ shinyServer(
           addCircleMarkers(
             lng = ~lon,
             lat = ~lat,
-            color = ~factpal(Adult_Youth),
+            color = ~factpal(Urban_Rural),
             popup = ~paste0(
               "<b>Name:</b> ",htmlEscape(Name),"<br/>",
               "<b>Address:</b> ",htmlEscape(Location),"<br/>",
@@ -63,7 +64,7 @@ shinyServer(
             ),
             stroke = FALSE,
             radius = 4,
-            fillOpacity = 0.6
+            fillOpacity = 0.8
           )
       }
      })
