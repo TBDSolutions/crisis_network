@@ -26,7 +26,6 @@ library(htmltools)
 
 # Please specify your own directory where CRU_address.feather file exists
 # If there is no such feather file, run readCRU.R automatically...
-if(!file.exists("C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_address.feather")) source("../readCRU.R")
 
 CRU_address <- read_feather("../data/CRU_address.feather")
 

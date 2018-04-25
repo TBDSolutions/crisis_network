@@ -6,7 +6,7 @@ library(htmltools); library(magrittr); library(feather)
 #### Get data from sheets ####
 
 #Please specify your own directory
-CRU_network <- read_excel("C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/Michigan CRUs (Adult and Youth).xlsx")
+CRU_network <- read_excel("data/Michigan CRUs (Adult and Youth).xlsx")
 
 # Rename column names
 names(CRU_network)[names(CRU_network) == 'Crisis Program'] <- 'Name'
@@ -52,6 +52,6 @@ while( na_location > 0){
 remove(x)
 
 # Make sure to designate the directory
-write_feather(CRU_address, "C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_address.feather")
-write_feather(CRU_coords, "C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_coords.feather")
-write_feather(CRU_network, "C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_network.feather")
+write_feather(CRU_address, "data/CRU_address.feather")
+write_feather(CRU_coords, "data/CRU_coords.feather")
+write_feather(CRU_network, "data/CRU_network.feather")
