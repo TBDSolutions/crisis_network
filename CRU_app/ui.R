@@ -1,7 +1,7 @@
 ## ui.R ##
 
 header <- dashboardHeader(
-  title = "CRU Map"
+  title = "Michigan Crisis Residential Units"
 )
 
 body <- dashboardBody(
@@ -28,22 +28,22 @@ body <- dashboardBody(
           condition = "input.radius_check == true",
           sliderInput(
             "radius_len_urban",
-            "Lengh of the Radius for Urban: (miles)",
+            "Radius for Urban Area (miles):",
             min = 10, max = 200, value = 60
           ),
           sliderInput(
             "radius_len_rural",
-            "Lengh of the Radius for Rural: (miles)",
+            "Radius for Rural Area (miles):",
             min = 10, max = 200, value = 120
           ),
           sliderInput(
             "radius_opacity",
-            "Opacity of the Radius",
+            "Opacity of Coverage Area:",
             min = 0.1, max = 0.5, value = 0.3
           )
         ),
         selectInput(
-          "age_group", "Choose the age group",
+          "age_group", "Age group served by CRU:",
           c(
             "Adult" = "Adult",
             "Youth" = "Youth"

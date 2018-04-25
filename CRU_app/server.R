@@ -14,11 +14,11 @@ shinyServer(
         filter(Adult_Youth %in% input$age_group) %>%
         leaflet() %>%
         addTiles() %>%
-        #addProviderTiles(providers$Stamen.Toner) %>%
+        addProviderTiles(providers$Stamen.Toner) %>%
         setView(
           lng = -85,
           lat = 44,
-          zoom = 7
+          zoom = 6
         )
       
     if(input$radius_check == T){
