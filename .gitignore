@@ -87,6 +87,7 @@ vignettes/*.pdf
 *.rds
 *.docx
 *.feather
+*.zip
 
 ## Files to support HTML output
 *\bootstrap*
