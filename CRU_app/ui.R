@@ -5,11 +5,21 @@ header <- dashboardHeader(
 )
 
 body <- dashboardBody(
+  tags$head(tags$style(HTML('
+        .skin-black .main-header .logo {
+          background-color: #ffffff; color:#000000;
+          
+        }',
+        '.skin-black .main-header .logo:hover {
+          background-color: #000000; color:#ffffff;
+        }
+      '))),
   # Suppress errors from waiting on reactive dataframes to be built.
   tags$style(
     type = "text/css",
     ".shiny-output-error { visibility: hidden; }",
     ".shiny-output-error:before { visibility: hidden; }"
+    
   ),
   fluidRow(
     column(
@@ -39,7 +49,7 @@ body <- dashboardBody(
           sliderInput(
             "radius_opacity",
             "Opacity of the Radius",
-            min = 0.1, max = 0.5, value = 0.3
+            min = 0.1, max = 0.5, value = 0.15
           )
         ),
         selectInput(

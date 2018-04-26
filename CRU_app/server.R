@@ -2,19 +2,18 @@
 
 shinyServer(
   function(input, output) { 
-    CRU_reactive <- reactive({
-      CRU_address %>% mutate(
-        Radius = ifelse(Urban_Rural == "Urban", input$radius_len_urban * 1609.34, input$radius_len_rural * 1609.34)
-      )
-    })
+    # CRU_reactive <- reactive({
+    #   CRU_address %>% mutate(
+    #     Radius = ifelse(Urban_Rural == "Urban", input$radius_len_urban * 1609.34, input$radius_len_rural * 1609.34)
+    #   )
+    # })
     
     output$CRU_radius <- renderLeaflet({
-      CRU_leaf <- CRU_reactive() %>%
+      CRU_leaf <- CRU_address %>%
         filter(!is.na(lon)) %>%
         filter(Adult_Youth %in% input$age_group) %>%
         leaflet() %>%
-        addTiles() %>%
-        #addProviderTiles(providers$Stamen.Toner) %>%
+        addProviderTiles(providers$CartoDB.Positron) %>%
         setView(
           lng = -85,
           lat = 44,
@@ -28,9 +27,9 @@ shinyServer(
           lng = ~lon,
           lat = ~lat,
           color = ~factpal(Urban_Rural),
-          stroke = FALSE,
+          stroke = TRUE,
           # Add radius in meters (= 60 miles)
-          radius = ~Radius,
+          radius = ~ifelse(Urban_Rural == "Urban", input$radius_len_urban * 1609.34, input$radius_len_rural * 1609.34),
           fillOpacity = input$radius_opacity
         ) %>%
         addCircleMarkers(
@@ -46,7 +45,7 @@ shinyServer(
           ),
           stroke = FALSE,
           radius = 4,
-          fillOpacity = 0.8
+          fillOpacity = 0.9
         )
 
       } else{

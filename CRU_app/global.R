@@ -35,4 +35,4 @@ CRU_address <- CRU_address %>%
   filter(!is.na(Name)) %>%
   mutate(Name = trimws(Name))
 
-factpal <- colorFactor("Accent", unique(CRU_address$Urban_Rural))
+factpal <- colorFactor("RdBu", unique(CRU_address$Urban_Rural))
