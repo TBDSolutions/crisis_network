@@ -51,7 +51,6 @@ while( na_location > 0){
 
 remove(x)
 
-# Make sure to designate the directory
-write_feather(CRU_address, "C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_address.feather")
-write_feather(CRU_coords, "C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_coords.feather")
-write_feather(CRU_network, "C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/CRU_network.feather")
+write_feather(CRU_address, "data/CRU_address.feather")
+write_feather(CRU_coords, "data/CRU_coords.feather")
+write_feather(CRU_network, "data/CRU_network.feather")
