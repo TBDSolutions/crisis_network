@@ -27,7 +27,7 @@ library(htmltools)
 # Please specify your own directory where CRU_address.feather file exists
 # If there is no such feather file, run readCRU.R automatically...
 
-CRU_address <- read_feather("../data/CRU_address.feather")
+CRU_address <- read_feather("data/CRU_address.feather")
 
 CRU_address <- CRU_address %>%
   filter(!is.na(lon)) %>%
