@@ -1,0 +1,10 @@
+name: cru_app
+title:
+username:
+account: tbdsolutions
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 330095
+bundleId: 1338819
+url: https://tbdsolutions.shinyapps.io/cru_app/
+when: 1524673520.01589
