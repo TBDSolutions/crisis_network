@@ -5,6 +5,6 @@ account: tbdsolutions
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 330095
-bundleId: 1338819
+bundleId: 1360323
 url: https://tbdsolutions.shinyapps.io/cru_app/
-when: 1524673520.01589
+when: 1525707364.54457
