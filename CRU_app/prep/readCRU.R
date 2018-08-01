@@ -6,7 +6,7 @@ library(htmltools); library(magrittr); library(feather)
 #### Get data from sheets ####
 
 #Please specify your own directory
-CRU_network <- read_excel("data/Michigan CRUs (Adult and Youth).xlsx")
+CRU_network <- read_excel("CRU_app/data/Michigan CRUs (Adult and Youth)(update).xlsx")
 
 # Rename column names
 names(CRU_network)[names(CRU_network) == 'Crisis Program'] <- 'Name'
@@ -29,8 +29,7 @@ CRU_address <-
 
 CRU_coords <- geocode(CRU_address$Location)
 
-CRU_address %<>%
-  bind_cols(CRU_coords)
+CRU_address %<>% bind_cols(CRU_coords)
 
 na_location <- CRU_address$lon %>% is.na() %>% sum()
 Max_Rep <- 10 #prevent while loop to repeat infinitely by restricting the maximum repitition time
@@ -51,6 +50,6 @@ while( na_location > 0){
 
 remove(x)
 
-write_feather(CRU_address, "data/CRU_address.feather")
-write_feather(CRU_coords, "data/CRU_coords.feather")
-write_feather(CRU_network, "data/CRU_network.feather")
+write_feather(CRU_address, "CRU_app/data/CRU_address.feather")
+write_feather(CRU_coords, "CRU_app/data/CRU_coords.feather")
+write_feather(CRU_network, "CRU_app/data/CRU_network.feather")
