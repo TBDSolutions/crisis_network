@@ -5,6 +5,6 @@ account: tbdsolutions
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 290868
-bundleId: 1360314
+bundleId: 1625955
 url: https://tbdsolutions.shinyapps.io/crisis_network/
-when: 1525707121.64326
+when: 1538775709.58893

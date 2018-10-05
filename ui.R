@@ -16,7 +16,7 @@ body <- dashboardBody(
       width = 9,
       box(
         width = NULL, solidHeader = TRUE,
-        leafletOutput("crisis_radius", height = 500)
+        leafletOutput("crisis_radius", height = 800)
       )
     ),
     column(
@@ -34,13 +34,8 @@ body <- dashboardBody(
         ),
         selectInput(
           "program_type", "Choose type(s) of program",
-          c(
-            "Crisis Facility" = "Crisis Facility",
-            "23hr Crisis Stabilization" = "23-Hour Crisis Stabilization",
-            "Peer Respite" = "Peer Respite",
-            "Youth CRU" = "Youth CRU"
-          ),
-          selected = c("Crisis Facility","23-Hour Crisis Stabilization","Peer Respite","Youth CRU"),
+          unique(crisis_address$type),
+          selected = unique(crisis_address$type),
           multiple = TRUE, selectize = TRUE, width = NULL, size = NULL
         )
       )

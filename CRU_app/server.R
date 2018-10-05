@@ -8,12 +8,21 @@ shinyServer(
     #   )
     # })
     
+    ## GREY MAP TILES ##
+    # "Esri.WorldGrayCanvas" 
+    # "HERE.normalDayGreyMobile" 
+    # "OpenMapSurfer.Grayscale"
+    # "CartoDB.DarkMatter"
+    # "Stamen.TonerLite"
+    # "Stamen.TonerBackground"  
+    # "OpenStreetMap.BlackAndWhite"
+    
     output$CRU_radius <- renderLeaflet({
       CRU_leaf <- CRU_address %>%
         filter(!is.na(lon)) %>%
         filter(Adult_Youth %in% input$age_group) %>%
         leaflet() %>%
-        addProviderTiles(providers$CartoDB.Positron) %>%
+        addProviderTiles("Esri.WorldGrayCanvas") %>%
         setView(
           lng = -85,
           lat = 44,

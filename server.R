@@ -3,12 +3,21 @@
 shinyServer(
   function(input, output) { 
     
+    ## GREY MAP TILES ##
+    # "Esri.WorldGrayCanvas" 
+    # "HERE.normalDayGreyMobile" 
+    # "OpenMapSurfer.Grayscale"
+    # "CartoDB.DarkMatter"
+    # "Stamen.TonerLite"
+    # "Stamen.TonerBackground"  
+    # "OpenStreetMap.BlackAndWhite"
+    
     output$crisis_radius <- renderLeaflet({
       crisis_leaf <- crisis_address %>%
         filter(is.na(lon) == F) %>%
         filter(type %in% input$program_type) %>%
         leaflet() %>%
-        addProviderTiles(providers$Stamen.Toner) %>%
+        addProviderTiles("CartoDB.DarkMatter") %>%
         setView(
           lng = -95,
           lat = 37,
@@ -44,7 +53,7 @@ shinyServer(
             radius = 4,
             fillOpacity = 0.6
           ) %>%
-          addLegend(
+          leaflet::addLegend(
             title = "Program Types",
             pal = factpal,
             values = ~type
@@ -65,7 +74,7 @@ shinyServer(
             radius = 4,
             fillOpacity = 0.6
           ) %>%
-          addLegend(
+          leaflet::addLegend(
             title = "Program Types",
             pal = factpal,
             values = ~type
