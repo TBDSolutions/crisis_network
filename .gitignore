@@ -76,6 +76,7 @@ vignettes/*.pdf
 #######
 # Data files
 #######
+*.Renviron
 
 *.csv
 *.xls
