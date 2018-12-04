@@ -22,9 +22,10 @@ crisis_ed_geocoded <-
     override_limit = T
   )
 
-factpal <- colorFactor("viridis", unique(crisis_ed_geocoded$type))
+# factpal <- colorFactor("viridis", unique(crisis_ed_geocoded$type))
 factpal <- colorFactor(
-  c("#823574","#f32d4c","#8f8cff","#ff8122","#eda1a3"),
+  #c("#823574","#8f8cff","#ff8122","#f32d4c","#eda1a3"),
+  c("#f90da0","#94a6fd","#68c3ef","#d678ef","#a33468","#ffa8ff"),
   #c("#208eb7", "#bd395c", "#12d388", "#ff0087", "#6fcf1d"),
   #c("#332288", "#88CCEE", "#117733", "#DDCC77", "#CC6677"), 
   unique(crisis_ed_geocoded$type)
