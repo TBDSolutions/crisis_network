@@ -42,7 +42,8 @@ crisis_ed_radius <-
     zoom = 7
   ) %>%
   addCircles(
-    lng = ~lon, lat = ~lat,
+    lng = ~crisis_ed_geocoded$lon[crisis_ed_geocoded$type != "ED"], 
+    lat = ~crisis_ed_geocoded$lat[crisis_ed_geocoded$type != "ED"],
     color = ~factpal(as.factor(type)), 
     stroke = FALSE,
     radius = 30 * 1609.34, # Add radius in meters (converted from miles)
