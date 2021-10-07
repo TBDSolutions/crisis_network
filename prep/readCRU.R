@@ -4,52 +4,42 @@ library(htmltools); library(magrittr); library(feather)
 
 
 #### Get data from sheets ####
-
+path <- "C:/Users/joshh/TBD Solutions LLC/TBDS Files on Pedro - CR Consolidated Information/Crisis Facilities Searchable Master Database.xlsx"
 #Please specify your own directory
-CRU_network <- read_excel("C:/Users/Jeong KyuHyun/Documents/GitHub/crisis_network/data/Michigan CRUs (Adult and Youth).xlsx")
+df <- read_excel(path, sheet = "Data Table")
 
-# Rename column names
-names(CRU_network)[names(CRU_network) == 'Crisis Program'] <- 'Name'
-names(CRU_network)[names(CRU_network) == 'Operated by'] <- 'Operated_by'
-names(CRU_network)[names(CRU_network) == 'Address'] <- 'Location'
-names(CRU_network)[names(CRU_network) == 'Adult or Youth'] <- 'Adult_Youth'
-names(CRU_network)[names(CRU_network) == 'Urban or Rural'] <- 'Urban_Rural'
+crisis_df <-
+  df %>%
+  rename_all(list(~str_to_lower(.))) %>%
+  rename_all(list(~str_replace_all(.," |-","_"))) %>%
+  # Remove columns with all NAs or 0s
+  map(~.x) %>%
+  discard(~all(is.na(.x)|.x == 0)) %>%
+  map_df(~.x)
 
-#### Get geocodes
+crisis_address <-
+  crisis_df %>%
+  filter(!is.na(address_1) & !is.na(city) & !is.na(zip)) %>%
+  filter(
+    !classification %in% c("State Psychiatric Hospital","Private Psychiatric Hospital")
+  ) %>%
+  mutate(
+    location = paste0(address_1,", ",city,", ",state," ",zip)
+  ) %>%
+  select(name, location, operated_by, classification) 
 
-CRU_address <-
-  CRU_network %>%
-  select(
-    Name,
-    Location,
-    Operated_by,
-    Adult_Youth,
-    Urban_Rural) %>%
-  filter(is.na(Location) == F)
+# Register Google Geocoding API 
+register_google(key = Sys.getenv("geocoding_api_key"), day_limit = 10000)
 
-CRU_coords <- geocode(CRU_address$Location)
-
-CRU_address %<>%
-  bind_cols(CRU_coords)
-
-na_location <- CRU_address$lon %>% is.na() %>% sum()
-Max_Rep <- 10 #prevent while loop to repeat infinitely by restricting the maximum repitition time
-
-#repeatedly do geocode until there is no NA values for lon & lat
-while( na_location > 0){
-  Max_Rep <- Max_Rep - 1
-  missing_loc <- which(CRU_address$lon %>% is.na())
-  for(i in 1:na_location){
-    x <- CRU_address$Location[missing_loc[i]] %>%
-      geocode()
-    CRU_address$lon[missing_loc[i]] = x$lon
-    CRU_address$lat[missing_loc[i]] = x$lat
-  }
-  na_location <- CRU_address$lon %>% is.na() %>% sum()
-  if(Max_Rep == 0) break
-}
-
-remove(x)
+crisis_coords <- 
+  crisis_address %>%
+  mutate_geocode(
+    location = location, 
+    source = "google",
+    output = "more", 
+    messaging = T,
+    override_limit = T
+  )
 
 write_feather(CRU_address, "data/CRU_address.feather")
 write_feather(CRU_coords, "data/CRU_coords.feather")
