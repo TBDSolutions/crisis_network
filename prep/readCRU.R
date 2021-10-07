@@ -41,6 +41,7 @@ crisis_coords <-
     override_limit = T
   )
 
-write_feather(CRU_address, "data/CRU_address.feather")
-write_feather(CRU_coords, "data/CRU_coords.feather")
-write_feather(CRU_network, "data/CRU_network.feather")
+rm(df)
+write_feather(crisis_address, "data/crisis_address.feather")
+write_feather(crisis_coords, "data/crisis_coords.feather")
+write_feather(crisis_df, "data/crisis_df.feather")
