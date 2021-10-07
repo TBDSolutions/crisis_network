@@ -44,9 +44,9 @@ shinyServer(
             lat = ~lat,
             color = ~factpal(type),
             popup = ~paste0(
-              "<b>Name:</b> ",htmlEscape(Name),"<br/>",
-              "<b>Address:</b> ",htmlEscape(Location),"<br/>",
-              "<b>Operated by:</b> ",htmlEscape(Operated),"<br/>",
+              "<b>Name:</b> ",htmlEscape(name),"<br/>",
+              "<b>Address:</b> ",htmlEscape(location),"<br/>",
+              "<b>Operated by:</b> ",htmlEscape(operated_by),"<br/>",
               "<b>Program Type:</b> ",htmlEscape(type)
             ),
             stroke = FALSE,
@@ -65,9 +65,9 @@ shinyServer(
             lat = ~lat,
             color = ~factpal(type),
             popup = ~paste0(
-              "<b>Name:</b> ",htmlEscape(Name),"<br/>",
-              "<b>Address:</b> ",htmlEscape(Location),"<br/>",
-              "<b>Operated by:</b> ",htmlEscape(Operated),"<br/>",
+              "<b>Name:</b> ",htmlEscape(name),"<br/>",
+              "<b>Address:</b> ",htmlEscape(location),"<br/>",
+              "<b>Operated by:</b> ",htmlEscape(operated_by),"<br/>",
               "<b>Program Type:</b> ",htmlEscape(type)
             ),
             stroke = FALSE,
